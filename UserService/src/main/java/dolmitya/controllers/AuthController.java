@@ -30,7 +30,6 @@ public class AuthController {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getUsername(), jwtRequest.getPassword()));
         } catch (BadCredentialsException e) {
-            //todo magic number
             return new ResponseEntity<>(new AppError(HttpStatus.UNAUTHORIZED.value(),
                     "incorrect username or password"), HttpStatus.UNAUTHORIZED);
         }
