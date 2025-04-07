@@ -32,11 +32,19 @@ public class MainController {
 
     @Operation(summary = "get balance")
     @SecurityRequirement(name = "JWT")
-    @GetMapping("/getBalance")
+    @GetMapping("/secured/getBalance")
     public Double getBalance(@RequestHeader("Authorization") String authHeader) {
         String jwtToken = authHeader.replace("Bearer ", "");
         String username = jwtTokenUtils.getUsername(jwtToken);
         return userService.getBalanceByUsername(username);
+    }
+
+    @Operation(summary = "get name")
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/secured/getName")
+    public String getName(@RequestHeader("Authorization") String authHeader) {
+        String jwtToken = authHeader.replace("Bearer ", "");
+        return jwtTokenUtils.getUsername(jwtToken);
     }
 
     @Operation(
@@ -52,7 +60,7 @@ public class MainController {
             )
     )
     @SecurityRequirement(name = "JWT")
-    @PostMapping("/topUpBalance")
+    @PostMapping("/secured/topUpBalance")
     public ResponseEntity<String> topUpBalance(@RequestHeader("Authorization") String authHeader, @RequestBody Map<String, Double> request) {
         String jwtToken = authHeader.replace("Bearer ", "");
         String username = jwtTokenUtils.getUsername(jwtToken);
@@ -74,7 +82,7 @@ public class MainController {
             )
     )
     @SecurityRequirement(name = "JWT")
-    @PutMapping("/updateUserInfo")
+    @PutMapping("/secured/updateUserInfo")
     public ResponseEntity<String> updateUserInfo(@RequestHeader("Authorization") String authHeader, @RequestBody Map<String, String> updates) {
         String jwtToken = authHeader.replace("Bearer ", "");
         String username = jwtTokenUtils.getUsername(jwtToken);
@@ -83,8 +91,21 @@ public class MainController {
     }
 
     @Operation(summary = "get username")
-    @GetMapping("/info")
+    @GetMapping("/secured/info")
     public String userData(Principal principal) {
         return principal.getName();
+    }
+
+    @Operation(summary = "get roles")
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/secured/getRoles")
+    public String getRoles(@RequestHeader("Authorization") String authHeader) {
+        String jwtToken = authHeader.replace("Bearer ", "");
+        return jwtTokenUtils.getRoles(jwtToken).toString();
+    }
+
+    @GetMapping("/admin/addScooter")
+    public String adminData() {
+        return "Admin data";
     }
 }
