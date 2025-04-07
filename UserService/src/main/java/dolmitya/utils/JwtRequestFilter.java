@@ -10,12 +10,14 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Slf4j
@@ -30,7 +32,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
         String username = null;
-        String jwtToken;
+        String jwtToken = null;
 
         if (authHeader != null && authHeader.startsWith(BEARER_PREFIX)) {
             jwtToken = authHeader.substring(BEARER_PREFIX.length());
@@ -52,12 +54,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username,
-                    null, Collections.emptyList());
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                    username,
+                    null,
+                    jwtTokenUtils.getRoles(jwtToken).stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
+            );
+            SecurityContextHolder.getContext().setAuthentication(token);
         }
-
         filterChain.doFilter(request, response);
     }
 }
