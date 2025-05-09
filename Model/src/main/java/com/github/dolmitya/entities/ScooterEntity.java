@@ -27,6 +27,9 @@ public class ScooterEntity {
     @Column(name = "status", nullable = false)
     private ScooterStatus status;
 
+    @Column(name = "price_per_minute")
+    private Double pricePerMinute;
+
     @OneToMany(mappedBy = "scooter", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<TripEntity> trips;
 }

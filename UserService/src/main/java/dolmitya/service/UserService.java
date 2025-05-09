@@ -37,10 +37,6 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username).get().getBalance();
     }
 
-    public String getRolesByUsername(String username) {
-        return userRepository.findByUsername(username).get().getRoles().stream().map(RoleEntity::getName).toList().toString();
-    }
-
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -1,5 +1,6 @@
 package dolmitya.controllers;
 
+import com.github.dolmitya.dto.user.UserResponse;
 import dolmitya.service.UserService;
 import dolmitya.utils.JwtTokenUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.Map;
 
 @RestController
@@ -30,6 +30,16 @@ public class MainController {
         return "secured";
     }
 
+    @Operation(summary = "get info")
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/secured/getInfo")
+    public UserResponse getInfo(@RequestHeader("Authorization") String authHeader) {
+        String jwtToken = authHeader.replace("Bearer ", "");
+        String username = jwtTokenUtils.getUsername(jwtToken);
+
+        return new UserResponse(username, userService.getBalanceByUsername(username), jwtTokenUtils.getRoles(jwtToken));
+    }
+
     @Operation(summary = "get balance")
     @SecurityRequirement(name = "JWT")
     @GetMapping("/secured/getBalance")
@@ -44,7 +54,7 @@ public class MainController {
     @GetMapping("/secured/getName")
     public String getName(@RequestHeader("Authorization") String authHeader) {
         String jwtToken = authHeader.replace("Bearer ", "");
-        return jwtTokenUtils.getUsername(jwtToken);
+        return  jwtTokenUtils.getUsername(jwtToken);
     }
 
     @Operation(
@@ -90,22 +100,11 @@ public class MainController {
         return ResponseEntity.ok("User info updated successfully");
     }
 
-    @Operation(summary = "get username")
-    @GetMapping("/secured/info")
-    public String userData(Principal principal) {
-        return principal.getName();
-    }
-
     @Operation(summary = "get roles")
     @SecurityRequirement(name = "JWT")
     @GetMapping("/secured/getRoles")
     public String getRoles(@RequestHeader("Authorization") String authHeader) {
         String jwtToken = authHeader.replace("Bearer ", "");
         return jwtTokenUtils.getRoles(jwtToken).toString();
-    }
-
-    @GetMapping("/admin/addScooter")
-    public String adminData() {
-        return "Admin data";
     }
 }

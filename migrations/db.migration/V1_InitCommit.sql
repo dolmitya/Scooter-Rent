@@ -28,7 +28,8 @@ create table scooters
     model      varchar(200) not null,
     latitude DOUBLE PRECISION,
     longitude DOUBLE PRECISION,
-    status   varchar(10) not null check (status in ('BUSY', 'FREE', 'BROKEN'))
+    status   varchar(10) not null check (status in ('BUSY', 'FREE', 'BROKEN')),
+    price_per_minute DOUBLE PRECISION
 );
 
 create table trip
@@ -37,14 +38,14 @@ create table trip
     scooter_id bigint not null,
     user_id  bigint not null,
     start_time timestamp not null,
-    end_time   timestamp not null,
-    start_latitude DOUBLE PRECISION,
-    start_longitude DOUBLE PRECISION,
+    end_time   timestamp,
+    start_latitude DOUBLE PRECISION not null,
+    start_longitude DOUBLE PRECISION not null,
     end_latitude DOUBLE PRECISION,
     end_longitude DOUBLE PRECISION,
     price_per_minute DOUBLE PRECISION,
-    constraint event_participants_event_id_fk foreign key (scooter_id) references scooters on delete cascade,
-    constraint event_participants_user_id_fk foreign key (user_id) references users on delete cascade,
+    constraint trip_scooter_id_fk foreign key (scooter_id) references scooters on delete cascade,
+    constraint trip_user_id_fk foreign key (user_id) references users on delete cascade,
     constraint check_event_dates check (start_time < end_time)
 );
 

@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -53,5 +54,15 @@ public class AuthController {
         userService.createNewUser(userDTO);
 
         return ResponseEntity.ok(new RegistrationResponse(userDTO.username()));
+    }
+
+    class SampleObject {
+        public String b;
+        public String c;
+    }
+
+    @RequestMapping("/map")
+    public String map(@RequestBody SampleObject sampleObject){
+        return sampleObject.b + sampleObject.c;
     }
 }
