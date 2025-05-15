@@ -84,6 +84,9 @@ const AdminPanel: React.FC = () => {
       setModel('');
       setPricePerMinute('');
       setLocation(null);
+      if (token) {
+        await loadModels();
+      }
     } catch (err) {
       setError('Ошибка при добавлении самоката');
     }
@@ -100,8 +103,8 @@ const AdminPanel: React.FC = () => {
       setSelectedModel('');
       setNewPrice('');
       if (token) {
-      loadModels();
-    }
+      await loadModels();
+      }
     } catch (err) {
       setError('Ошибка обновлении цены');
     } finally{

@@ -55,14 +55,4 @@ public class AuthController {
 
         return ResponseEntity.ok(new RegistrationResponse(userDTO.username()));
     }
-
-    class SampleObject {
-        public String b;
-        public String c;
-    }
-
-    @RequestMapping("/map")
-    public String map(@RequestBody SampleObject sampleObject){
-        return sampleObject.b + sampleObject.c;
-    }
 }
